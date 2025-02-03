@@ -1,0 +1,2 @@
+adas
+distanza coni monoculare
