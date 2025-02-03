@@ -8,7 +8,7 @@ class Rete(nn.Module):
     def __init__(self):
         super(Rete, self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Linear(5, 10000),
+            nn.Linear(5, 256),
             nn.ReLU(),
             #nn.Tanh(),
         )
