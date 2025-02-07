@@ -23,7 +23,7 @@ def print_time(elapsed, stop_epoch):
 class Solver(object):
     """Solver for training and testing."""
 
-    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals):
+    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals=None, max_vals=None):
         self.seed = seed #da togliere poi nella versione finale
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.net = Rete().to(self.device)
@@ -197,3 +197,79 @@ class Solver(object):
         self.net.train()
         out = out.to("cpu")
         return out
+        
+    def train_denorm(self):
+        self.net.train()
+        y_train_denorm = np.empty(self.epochs)
+        y_val_denorm = np.empty(self.epochs)
+        n_plus = 0
+        stop_epoch = 0
+        start = time.time()
+        for epoch in range(self.epochs):
+            stop_epoch = epoch + 1
+            running_loss_denorm = 0.0
+            for batch_inputs, batch_gt in self.train_loader:
+                batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
+                self.optimizer.zero_grad()
+                outputs = self.net(batch_inputs)
+                loss_denorm = self.criterion(outputs, batch_gt)
+                loss_denorm.backward()
+                self.optimizer.step()
+                running_loss_denorm += loss_denorm.item()
+                
+            val_loss_denorm = 0.0
+            with torch.no_grad():
+                for batch_inputs, batch_gt in self.val_loader:
+                    batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
+                    outputs = self.net(batch_inputs)
+                    loss_denorm = self.criterion(outputs, batch_gt)
+                    val_loss_denorm += loss_denorm.item()
+
+            y_val_denorm[epoch] = val_loss_denorm/len(self.val_loader)
+            y_train_denorm[epoch] = running_loss_denorm/len(self.train_loader)
+            if ((epoch+1) % 10 == 0):
+                print(f"Epoch {epoch+1}/{self.epochs}, Train Loss denorm: {y_train_denorm[epoch]:.10f}, Val Loss denorm: {val_loss_denorm/len(self.val_loader):.10f}")
+            if (epoch > 0):
+                if (val_loss_denorm/len(self.val_loader) > y_val_denorm[epoch-1]):
+                    n_plus = n_plus + 1
+                else:
+                    n_plus = 0
+            if (n_plus >= self.inc_val):
+                print(f"Last Epoch {epoch+1}/{self.epochs}, Train Loss denorm: {y_train_denorm[epoch]:.10f}, Val Loss denorm: {val_loss_denorm/len(self.val_loader):.10f}")
+                break
+        end = time.time()
+        self.elapsed = end-start
+        self.stop_epoch = stop_epoch
+        print_time(self.elapsed, stop_epoch)
+        if (n_plus >= 2):  
+            print('Finished Training because of Validation') 
+        else:
+            print('Finished Training')
+    
+    def test_denorm(self):
+        test_loss_denorm = 0.0
+        n_cones = 0
+        n_big_cones = 0
+        test_loss_denorm_big_cones = 0
+        test_loss_denorm_cones = 0
+        self.net.eval()
+        with torch.no_grad():
+            for batch_inputs, batch_gt in self.test_loader:
+                batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
+                outputs = self.net(batch_inputs)
+                loss_denorm = self.criterion(outputs, batch_gt)
+                test_loss_denorm += loss_denorm.item()
+                for single_input in batch_inputs:
+                    if (single_input[0] == 0):
+                        n_cones += 1
+                        test_loss_denorm_cones += loss_denorm.item()
+                    else:
+                        n_big_cones += 1
+                        test_loss_denorm_big_cones += loss_denorm.item()
+
+        
+        print(f"Test Loss denorm: {test_loss_denorm/len(self.test_loader):.10f}")
+        self.save_info_model(self.elapsed, self.checkpoint_path, self.model_name, self.batch_size, self.seed, self.lr, self.epochs, self.stop_epoch, self.inc_val, 1, test_loss_denorm, len(self.test_loader), self.net.layer1[0].out_features, n_cones, n_big_cones, test_loss_denorm_cones, test_loss_denorm_big_cones, 1, 1)
+        self.net.train()
+    
+    
