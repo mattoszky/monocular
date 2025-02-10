@@ -18,10 +18,10 @@ def main():
     file_path = "./dati/dataset/dati_puliti_minore_20.dat"
     data = np.loadtxt(file_path)
     
-    norm = False
-    seed = 70
+    norm = True
+    seed = 10
     torch.manual_seed(seed)
-    batch_size = 64
+    batch_size = 32
     if norm:
         # Estrai input e ground truth
         inputs = data[:, :5]
@@ -79,16 +79,18 @@ def main():
                 test_loader=test_loader,
                 min_vals=min_val_tensor,
                 max_vals=max_val_tensor,
-                epochs=10,
-                lr=0.001, #0.0001 o 0.001
-                criterion=nn.MSELoss(),
-                inc_val=5,
+                epochs=300,
+                lr=0.0001, #0.0001 o 0.001
+                train_criterion=nn.MSELoss(), #huber loss
+                test_criterion=nn.L1Loss(),
+                inc_val=30,
                 batch_size=batch_size,
                 checkpoint_path="modelli",
-                model_name=args.mn)
+                model_name=args.mn, 
+                print_every=10)
         #solver.load_model()
         solver.train()
-        #solver.load_model()
+        solver.load_model()
         solver.test()
         
     else:     
@@ -121,17 +123,18 @@ def main():
                 checkpoint_path="modelli",
                 model_name=args.mn)
         #solver.load_model()
-        solver.train()
+        #solver.train()
         #solver.load_model()
-        solver.test()
+        #solver.test()
     
-    
+    #solver.save_model()
 
     """
     inp = torch.tensor([0.000000, 2500.000000, 839.000000, 117.000000, 167.000000], dtype=torch.float32)
     min_val_tensor = min_val_tensor.type(torch.float32)
     max_val_tensor = max_val_tensor.type(torch.float32)
     inp = (inp - min_val_tensor[:5]) / (max_val_tensor[:5] - min_val_tensor[:5])
+    
     res = solver.calc(inp)
     
     print(f"min vals: {min_vals[5:]}")
@@ -147,7 +150,6 @@ def main():
     
     
     """
-    solver.save_model()
 
 
 if __name__ == "__main__":

@@ -1,9 +1,6 @@
 
-import torch
 import torch.nn as nn
 
-# codice della rete
-# 5 input e 2 output
 class Rete(nn.Module):
     def __init__(self):
         super(Rete, self).__init__()

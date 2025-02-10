@@ -23,14 +23,15 @@ def print_time(elapsed, stop_epoch):
 class Solver(object):
     """Solver for training and testing."""
 
-    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals):
+    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every):
         self.seed = seed #da togliere poi nella versione finale
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.net = Rete().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
-        self.criterion = criterion
+        self.train_criterion = train_criterion
+        self.test_criterion = test_criterion
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.test_loader = test_loader
@@ -40,6 +41,7 @@ class Solver(object):
         self.batch_size = batch_size
         self.checkpoint_path = checkpoint_path
         self.model_name = model_name
+        self.print_every = print_every
         self.writer_train = SummaryWriter('./runs/' + self.model_name + '/train')
         self.writer_val = SummaryWriter('./runs/' + self.model_name + '/val')
         self.writer_info = SummaryWriter('./runs/' + self.model_name + '/info')
@@ -69,7 +71,7 @@ class Solver(object):
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 self.optimizer.zero_grad()
                 outputs = self.net(batch_inputs)
-                loss_norm = self.criterion(outputs, batch_gt)
+                loss_norm = self.train_criterion(outputs, batch_gt)
                 loss_norm.backward()
                 self.optimizer.step()
                 running_loss_norm += loss_norm.item()
@@ -77,23 +79,28 @@ class Solver(object):
                 if ((epoch+1) % 10 == 0):
                     outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                     batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
-                    loss_denorm = self.criterion(outputs, batch_gt)
+                    loss_denorm = self.train_criterion(outputs, batch_gt)
                     running_loss_denorm += loss_denorm.item()
             self.writer_train.add_scalar('loss', running_loss_norm/len(self.train_loader), epoch+1)
             val_loss_norm, val_loss_denorm = self.validation(epoch)
-            if ((epoch+1) % 10 == 0):
+            if ((epoch+1) % self.print_every == 0):
                 print(f"Epoch {epoch+1}/{self.epochs}, Train Loss norm: {running_loss_norm/len(self.train_loader):.10f}, Train Loss denorm: {running_loss_denorm/len(self.train_loader):.10f}, Val Loss norm: {val_loss_norm:.10f}, Val Loss denorm: {val_loss_denorm:.10f}")
-            if (epoch > 0):
-                if (val_loss_norm >= old_val_norm):
+            if epoch == 0:
+                self.best_val_loss = val_loss_norm
+                n_plus = 0
+                self.save_model()
+            else:
+                if (val_loss_norm > self.best_val_loss):
                     n_plus = n_plus + 1
                 else:
                     n_plus = 0
+                    self.best_val_loss = val_loss_norm
+                    self.save_model()
             if (n_plus >= self.inc_val):
                 print(f"Last Epoch {epoch+1}/{self.epochs}, Train Loss norm: {running_loss_norm/len(self.train_loader):.10f}, Train Loss denorm: {running_loss_denorm/len(self.train_loader):.10f}, Val Loss norm: {val_loss_norm:.10f}, Val Loss denorm: {val_loss_denorm:.10f}")
                 break
             self.writer_train.flush()
             self.writer_val.flush()
-            old_val_norm = val_loss_norm
         end = time.time()
         self.elapsed = end-start
         self.stop_epoch = stop_epoch
@@ -113,41 +120,16 @@ class Solver(object):
             for batch_inputs, batch_gt in self.val_loader:
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 outputs = self.net(batch_inputs)
-                loss_norm = self.criterion(outputs, batch_gt)
+                loss_norm = self.train_criterion(outputs, batch_gt)
                 val_loss_norm += loss_norm.item()
                 if ((epoch+1) % 10 == 0):
                     outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                     batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
-                    loss_denorm = self.criterion(outputs, batch_gt)
+                    loss_denorm = self.train_criterion(outputs, batch_gt)
                     val_loss_denorm += loss_denorm.item()
         self.writer_val.add_scalar('loss', val_loss_norm/len(self.val_loader), epoch+1)
         self.net.train()
         return val_loss_norm/len(self.val_loader), val_loss_denorm/len(self.val_loader)
-                
-    def save_info_model(self, test_loss_norm, test_loss_denorm, test_loss_denorm_cones, test_loss_denorm_big_cones, test_loss_norm_cones, test_loss_norm_big_cones):
-        h, m, s = get_time(self.elapsed)
-        data_dict = {
-            "model name": self.model_name,
-            "numero di neuroni nel primo strato": self.net.layer1[0].out_features,
-            "batch size": self.batch_size, 
-            "seed": self.seed, 
-            "lr": self.lr,
-            "epoche": self.epochs, 
-            "epocha di terminazione": self.stop_epoch, 
-            "numero di incrementi max nel validation set": self.inc_val,
-            "test loss norm": (test_loss_norm / len(self.test_loader)), 
-            "test loss denorm": (test_loss_denorm / len(self.test_loader)),
-            "tempo di addestramento": f"{h} ore, {m} minuti e {s} secondi",
-            "numero coni 0": self.n_cones,
-            "numero coni 1": self.n_big_cones,
-            "loss norm coni 0": (test_loss_norm_cones/self.n_cones),
-            "loss norm coni 1": (test_loss_norm_big_cones/self.n_big_cones),
-            "loss denorm coni 0": (test_loss_denorm_cones/self.n_cones),
-            "loss denorm coni 1": (test_loss_denorm_big_cones/self.n_big_cones),
-            }
-        self.writer_info.add_text("info", json.dumps(data_dict, indent=4), 1)  
-        self.writer_info.flush()
-        self.writer_info.close()
     
     def test(self):
         test_loss_norm = 0.0
@@ -163,10 +145,10 @@ class Solver(object):
             for batch_inputs, batch_gt in self.test_loader:
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 outputs = self.net(batch_inputs)
-                loss_norm = self.criterion(outputs, batch_gt)
+                loss_norm = self.test_criterion(outputs, batch_gt)
                 outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                 batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
-                loss_denorm = self.criterion(outputs, batch_gt)
+                loss_denorm = self.test_criterion(outputs, batch_gt)
                 test_loss_norm += loss_norm.item()
                 test_loss_denorm += loss_denorm.item()
                 for single_input in batch_inputs:
@@ -197,3 +179,31 @@ class Solver(object):
         self.net.train()
         out = out.to("cpu")
         return out
+    
+    def save_info_model(self, test_loss_norm, test_loss_denorm, test_loss_denorm_cones, test_loss_denorm_big_cones, test_loss_norm_cones, test_loss_norm_big_cones):
+        h, m, s = get_time(self.elapsed)
+        data_dict = {
+            "model name": self.model_name,
+            "numero di neuroni nel primo strato": self.net.layer1[0].out_features,
+            "batch size": self.batch_size, 
+            "seed": self.seed, 
+            "lr": self.lr,
+            "criterion train": self.train_criterion.__class__.__name__,
+            "criterion test": self.test_criterion.__class__.__name__,
+            "epoche": self.epochs, 
+            "epocha di terminazione": self.stop_epoch, 
+            "numero di non miglioramenti max nel validation set": self.inc_val,
+            "stampa info ogni": self.print_every,
+            "test loss norm": (test_loss_norm / len(self.test_loader)), 
+            "test loss denorm": (test_loss_denorm / len(self.test_loader)),
+            "tempo di addestramento": f"{h} ore, {m} minuti e {s} secondi",
+            "numero coni 0": self.n_cones,
+            "numero coni 1": self.n_big_cones,
+            "loss norm coni 0": (test_loss_norm_cones/self.n_cones),
+            "loss norm coni 1": (test_loss_norm_big_cones/self.n_big_cones),
+            "loss denorm coni 0": (test_loss_denorm_cones/self.n_cones),
+            "loss denorm coni 1": (test_loss_denorm_big_cones/self.n_big_cones),
+            }
+        self.writer_info.add_text("info", json.dumps(data_dict, indent=4), 1)  
+        self.writer_info.flush()
+        self.writer_info.close()
