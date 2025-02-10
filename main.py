@@ -4,8 +4,8 @@ from Dataset import CustomDataset
 import numpy as np
 import torch
 import torch.nn as nn
-from Solver import Solver
-from Solver_Denorm import Solver_Denorm
+from solvers.Solver import Solver
+from solvers.Solver_Denorm import Solver_Denorm
 import argparse
 
 def main():

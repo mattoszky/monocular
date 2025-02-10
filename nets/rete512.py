@@ -1,34 +1,38 @@
 
 import torch.nn as nn
 
-class Rete(nn.Module):
+class Rete512(nn.Module):
     def __init__(self):
-        super(Rete, self).__init__()
+        super(Rete512, self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Linear(5, 256),
+            nn.Linear(5, 512),
             nn.ReLU(),
         )
         self.layer2 = nn.Sequential(
-            nn.Linear(256, 128),
+            nn.Linear(512, 256),
             nn.ReLU(),
         )
         self.layer3 = nn.Sequential(
-            nn.Linear(128, 64),
+            nn.Linear(256, 128),
             nn.ReLU(),
         )
         self.layer4 = nn.Sequential(
-            nn.Linear(64, 32),
+            nn.Linear(128, 64),
             nn.ReLU(),
         )
         self.layer5 = nn.Sequential(
-            nn.Linear(32, 16),
+            nn.Linear(64, 32),
             nn.ReLU(),
         )
         self.layer6 = nn.Sequential(
-            nn.Linear(16, 8),
+            nn.Linear(32, 16),
             nn.ReLU(),
         )
         self.layer7 = nn.Sequential(
+            nn.Linear(16, 8),
+            nn.ReLU(),
+        )
+        self.layer8 = nn.Sequential(
             nn.Linear(8, 4),
             nn.ReLU(),
         )
@@ -42,5 +46,6 @@ class Rete(nn.Module):
         x = self.layer5(x)
         x = self.layer6(x)
         x = self.layer7(x)
-        x = self.output(x)  # Nessuna funzione di attivazione sull'output per la regressione
+        x = self.layer8(x)
+        x = self.output(x)
         return x

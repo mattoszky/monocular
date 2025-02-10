@@ -7,7 +7,7 @@ import json
 
 from torch.utils.tensorboard import SummaryWriter
 
-from Rete import Rete
+from nets.rete256 import Rete
 
 def get_time(elapsed):
     h = int(elapsed // 3600)

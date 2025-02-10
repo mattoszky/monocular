@@ -7,7 +7,7 @@ import json
 
 from torch.utils.tensorboard import SummaryWriter
 
-from Rete import Rete
+from nets.rete256 import Rete256
 
 def get_time(elapsed):
     h = int(elapsed // 3600)
@@ -26,7 +26,7 @@ class Solver(object):
     def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every):
         self.seed = seed #da togliere poi nella versione finale
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = Rete().to(self.device)
+        self.net = Rete256().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
@@ -140,6 +140,8 @@ class Solver(object):
         test_loss_norm_cones = 0
         test_loss_denorm_big_cones = 0
         test_loss_denorm_cones = 0
+        tes_loss_denorm_x = 0
+        tes_loss_denorm_y = 0
         self.net.eval()
         with torch.no_grad():
             for batch_inputs, batch_gt in self.test_loader:
