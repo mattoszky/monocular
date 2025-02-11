@@ -5,7 +5,7 @@ import matplotlib.colors as colors
 from torch.utils.tensorboard import SummaryWriter
 
 def writeImg(x0, y0, x1, y1, x_label, y_label):
-    writer = SummaryWriter("runs/dataset/" + x_label + "-" + y_label)
+    writer = SummaryWriter("./../runs/dataset/" + x_label + "-" + y_label)
     fig1, ax1 = plt.subplots(figsize=(5, 5))
     ax1.scatter(x1, y1, c='blue', alpha=0.5)
     ax1.set_xlabel(x_label.upper())
@@ -30,7 +30,7 @@ def writeImg(x0, y0, x1, y1, x_label, y_label):
     writer.close()
 
 def writeImgHeatmap(x0, y0, x1, y1, x_label, y_label, vmin=0, vmax=0.000001):
-    writer = SummaryWriter("runs/dataset/"  + x_label + "-" + y_label)
+    writer = SummaryWriter("./../runs/dataset/"  + x_label + "-" + y_label)
 
     # Heatmap per il primo set di punti (coni 1)
     fig1, ax1 = plt.subplots(figsize=(5, 5))
@@ -65,7 +65,7 @@ def draw_images(x0, y0, x1, y1, x_label, y_label, min, max):
 
 def main():
     # Caricamento dati
-    file_path = "./dati/dataset/dati_puliti_minore_20.dat"
+    file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
     data = np.loadtxt(file_path)
 
     # Selezione dei dati

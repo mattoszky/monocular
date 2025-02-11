@@ -23,7 +23,7 @@ def print_time(elapsed, stop_epoch):
 class Solver(object):
     """Solver for training and testing."""
 
-    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every):
+    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every, th_x=5, th_y=5):
         self.seed = seed #da togliere poi nella versione finale
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.net = Rete256().to(self.device)
@@ -42,9 +42,11 @@ class Solver(object):
         self.checkpoint_path = checkpoint_path
         self.model_name = model_name
         self.print_every = print_every
-        self.writer_train = SummaryWriter('./runs/' + self.model_name + '/train')
-        self.writer_val = SummaryWriter('./runs/' + self.model_name + '/val')
-        self.writer_info = SummaryWriter('./runs/' + self.model_name + '/info')
+        self.th_x = th_x
+        self.th_y = th_y
+        self.writer_train = SummaryWriter('./../runs/' + self.model_name + '/train')
+        self.writer_val = SummaryWriter('./../runs/' + self.model_name + '/val')
+        self.writer_info = SummaryWriter('./../runs/' + self.model_name + '/info')
 
     def save_model(self):
         # if you want to save the model
@@ -140,8 +142,17 @@ class Solver(object):
         test_loss_norm_cones = 0
         test_loss_denorm_big_cones = 0
         test_loss_denorm_cones = 0
-        tes_loss_denorm_x = 0
-        tes_loss_denorm_y = 0
+        test_loss_denorm_x = 0
+        test_loss_denorm_y = 0
+        test_loss_denorm_d = 0
+        test_loss_denorm_x_cones = 0
+        test_loss_denorm_y_cones = 0
+        test_loss_denorm_d_cones = 0
+        test_loss_denorm_x_big_cones = 0
+        test_loss_denorm_y_big_cones = 0
+        test_loss_denorm_d_big_cones = 0
+        n_cones_near = 0
+        test_loss_denorm_d_cones_near = 0
         self.net.eval()
         with torch.no_grad():
             for batch_inputs, batch_gt in self.test_loader:
@@ -153,25 +164,68 @@ class Solver(object):
                 loss_denorm = self.test_criterion(outputs, batch_gt)
                 test_loss_norm += loss_norm.item()
                 test_loss_denorm += loss_denorm.item()
+                x_out, y_out = outputs[:,0], outputs[:,1]
+                x_gt, y_gt = batch_gt[:,0], batch_gt[:,1]
+                d_out = (x_out**2 + y_out**2)**(1/2)
+                d_gt = (x_gt**2 + y_gt**2)**(1/2)
+                loss_x = self.test_criterion(x_out, x_gt)
+                loss_y = self.test_criterion(y_out, y_gt)
+                loss_d = self.test_criterion(d_out, d_gt)
+                test_loss_denorm_x += loss_x.item()
+                test_loss_denorm_y += loss_y.item()
+                test_loss_denorm_d += loss_d.item()
                 for single_input in batch_inputs:
                     if (single_input[0] == 0):
                         self.n_cones += 1
                         test_loss_norm_cones += loss_norm.item()
                         test_loss_denorm_cones += loss_denorm.item()
+                        test_loss_denorm_x_cones += loss_x.item()
+                        test_loss_denorm_y_cones += loss_y.item()
+                        test_loss_denorm_d_cones += loss_d.item()
                     else:
                         self.n_big_cones += 1
                         test_loss_norm_big_cones += loss_norm.item()
                         test_loss_denorm_big_cones += loss_denorm.item()
-
+                        test_loss_denorm_x_big_cones += loss_x.item()
+                        test_loss_denorm_y_big_cones += loss_y.item()
+                        test_loss_denorm_d_big_cones += loss_d.item()
+                for single_gt in batch_gt:
+                    if single_gt[0] <= self.th_x and (single_gt[1] <= self.th_y and single_gt[1] >= -self.th_y):
+                        n_cones_near += 1
+                        test_loss_denorm_d_cones_near += loss_d.item()
+                        
         
         print(f"Test Loss norm: {test_loss_norm/len(self.test_loader):.10f}, Test Loss denorm: {test_loss_denorm/len(self.test_loader):.10f}")
+        print(f"Test loss x: {test_loss_denorm_x/len(self.test_loader):.10f}, Test loss y: {test_loss_denorm_y/len(self.test_loader):.10f}")
+        print(f"Test loss distance: {test_loss_denorm_d/len(self.test_loader):.10f}")
+        
+        print(f"Test loss x cones: {test_loss_denorm_x_cones/self.n_cones:.10f}, Test loss y cones: {test_loss_denorm_y_cones/self.n_cones:.10f}")
+        print(f"Test loss distance cones: {test_loss_denorm_d_cones/self.n_cones:.10f}")
+        
+        print(f"Test loss x big cones: {test_loss_denorm_x_big_cones/self.n_big_cones:.10f}, Test loss y big cones: {test_loss_denorm_y_big_cones/self.n_big_cones:.10f}")
+        print(f"Test loss distance big cones: {test_loss_denorm_d_big_cones/self.n_big_cones:.10f}")
+        
+        print(f"Test loss distance near cones: {test_loss_denorm_d_cones_near/n_cones_near:.10f}")
+        
         self.save_info_model(test_loss_norm, 
                         test_loss_denorm, 
                         test_loss_denorm_cones, 
                         test_loss_denorm_big_cones, 
                         test_loss_norm_cones, 
-                        test_loss_norm_big_cones
+                        test_loss_norm_big_cones,
+                        
+                        test_loss_denorm_x/len(self.test_loader),
+                        test_loss_denorm_y/len(self.test_loader),
+                        test_loss_denorm_d/len(self.test_loader),
+                        test_loss_denorm_x_cones/self.n_cones,
+                        test_loss_denorm_y_cones/self.n_cones,
+                        test_loss_denorm_d_cones/self.n_cones,
+                        test_loss_denorm_x_big_cones/self.n_big_cones,
+                        test_loss_denorm_y_big_cones/self.n_big_cones,
+                        test_loss_denorm_d_big_cones/self.n_big_cones,
+                        test_loss_denorm_d_cones_near/n_cones_near
                         )
+        
         self.net.train()
     
     def calc(self, inputs):
@@ -182,7 +236,24 @@ class Solver(object):
         out = out.to("cpu")
         return out
     
-    def save_info_model(self, test_loss_norm, test_loss_denorm, test_loss_denorm_cones, test_loss_denorm_big_cones, test_loss_norm_cones, test_loss_norm_big_cones):
+    def save_info_model(self, test_loss_norm, 
+                        test_loss_denorm, 
+                        test_loss_denorm_cones, 
+                        test_loss_denorm_big_cones, 
+                        test_loss_norm_cones, 
+                        test_loss_norm_big_cones,
+                        
+                        test_loss_denorm_x,
+                        test_loss_denorm_y,
+                        test_loss_denorm_d,
+                        test_loss_denorm_x_cones,
+                        test_loss_denorm_y_cones,
+                        test_loss_denorm_d_cones,
+                        test_loss_denorm_x_big_cones,
+                        test_loss_denorm_y_big_cones,
+                        test_loss_denorm_d_big_cones,
+                        test_loss_denorm_d_cones_near
+                        ):
         h, m, s = get_time(self.elapsed)
         data_dict = {
             "model name": self.model_name,
@@ -191,6 +262,7 @@ class Solver(object):
             "seed": self.seed, 
             "lr": self.lr,
             "criterion train": self.train_criterion.__class__.__name__,
+            "delta": self.train_criterion.delta if self.train_criterion.__class__.__name__ == "HuberLoss" else "None",
             "criterion test": self.test_criterion.__class__.__name__,
             "epoche": self.epochs, 
             "epocha di terminazione": self.stop_epoch, 
@@ -205,6 +277,17 @@ class Solver(object):
             "loss norm coni 1": (test_loss_norm_big_cones/self.n_big_cones),
             "loss denorm coni 0": (test_loss_denorm_cones/self.n_cones),
             "loss denorm coni 1": (test_loss_denorm_big_cones/self.n_big_cones),
+            
+            "loss denorm x" : test_loss_denorm_x,
+            "loss denorm y" : test_loss_denorm_y,
+            "loss denorm d" : test_loss_denorm_d,
+            "loss denorm x coni 0" : test_loss_denorm_x_cones,
+            "loss denorm y coni 0" : test_loss_denorm_y_cones,
+            "loss denorm d coni 0" : test_loss_denorm_d_cones,
+            "loss denorm x coni 1" : test_loss_denorm_x_big_cones,
+            "loss denorm y coni 1" : test_loss_denorm_y_big_cones,
+            "loss denorm d coni 1" : test_loss_denorm_d_big_cones,
+            f"loss denorm d coni vicini ({self.th_x}, +-{self.th_y})" : test_loss_denorm_d_cones_near,
             }
         self.writer_info.add_text("info", json.dumps(data_dict, indent=4), 1)  
         self.writer_info.flush()

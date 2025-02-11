@@ -15,11 +15,11 @@ def main():
     args = parser.parse_args()
     
     #carico i dati
-    file_path = "./dati/dataset/dati_puliti_minore_20.dat"
+    file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
     data = np.loadtxt(file_path)
     
     norm = True
-    seed = 10
+    seed = 100
     torch.manual_seed(seed)
     batch_size = 32
     if norm:
@@ -74,23 +74,26 @@ def main():
         test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
         
         solver = Solver(seed = seed,
-                train_loader=train_loader,
-                val_loader=val_loader,
-                test_loader=test_loader,
-                min_vals=min_val_tensor,
-                max_vals=max_val_tensor,
-                epochs=300,
-                lr=0.0001, #0.0001 o 0.001
-                train_criterion=nn.MSELoss(), #huber loss
-                test_criterion=nn.L1Loss(),
-                inc_val=30,
-                batch_size=batch_size,
-                checkpoint_path="modelli",
-                model_name=args.mn, 
-                print_every=10)
+                    train_loader=train_loader,
+                    val_loader=val_loader,
+                    test_loader=test_loader,
+                    min_vals=min_val_tensor,
+                    max_vals=max_val_tensor,
+                    epochs=300,
+                    lr=0.0001,
+                    train_criterion=nn.SmoothL1Loss(), 
+                    test_criterion=nn.L1Loss(),
+                    inc_val=30,
+                    batch_size=batch_size,
+                    checkpoint_path="../modelli",
+                    model_name=args.mn, 
+                    print_every=10,
+                    th_x=5,
+                    th_y=5
+                )
         #solver.load_model()
         solver.train()
-        solver.load_model()
+        #solver.load_model()
         solver.test()
         
     else:     

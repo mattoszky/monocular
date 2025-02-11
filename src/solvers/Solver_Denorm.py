@@ -7,7 +7,7 @@ import json
 
 from torch.utils.tensorboard import SummaryWriter
 
-from nets.rete256 import Rete
+from nets.rete256 import Rete256
 
 def get_time(elapsed):
     h = int(elapsed // 3600)
@@ -26,7 +26,7 @@ class Solver_Denorm(object):
     def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, criterion, inc_val, batch_size, checkpoint_path, model_name):
         self.seed = seed #da togliere poi nella versione finale
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = Rete().to(self.device)
+        self.net = Rete256().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
