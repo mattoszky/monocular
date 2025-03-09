@@ -9,7 +9,7 @@ from utils.dataset import CustomDataset
 from solvers.Solver import Solver
 
 def main():
-    seed = 287
+    seed = 254
     torch.manual_seed(seed)
     
     # takes argument from command line
