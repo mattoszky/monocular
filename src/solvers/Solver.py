@@ -1,15 +1,18 @@
 import torch
 import torch.optim as optim
 import os
-import numpy as np
 import time
-import json
 
 from torch.utils.tensorboard import SummaryWriter
 
 from nets.rete256 import Rete256
+from nets.rete512 import Rete512
 
 def get_time(elapsed):
+    """
+    Returns h, m, s from a given elapsed time
+    """
+    
     h = int(elapsed // 3600)
     m = int((elapsed % 3600) // 60)
     s = int(elapsed % 60)
@@ -18,15 +21,17 @@ def get_time(elapsed):
 def print_time(elapsed, stop_epoch):
     hours, minutes, seconds = get_time(elapsed)
     print(f"stop_epoch: {stop_epoch}")
-    print(f"Il training è durato {hours} ore, {minutes} minuti e {seconds} secondi")    
+    print(f"Training time: {hours} hours, {minutes} minutes e {seconds} seconds")    
 
 class Solver(object):
-    """Solver for training and testing."""
-
+    """
+    Solver for training and testing.
+    """
+    
     def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every, th_x=5, th_y=5):
-        self.seed = seed #da togliere poi nella versione finale
+        self.seed = seed
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = Rete256().to(self.device)
+        self.net = Rete512().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
@@ -49,18 +54,28 @@ class Solver(object):
         self.writer_info = SummaryWriter('./../runs/' + self.model_name + '/info')
 
     def save_model(self):
-        # if you want to save the model
+        """
+        Saves the model with the model name in the provided path
+        """
+        
         check_path = os.path.join(self.checkpoint_path, self.model_name)
         torch.save(self.net.state_dict(), check_path)
         print("Model saved!")
 
     def load_model(self):
-        # function to load the model
+        """
+        Gets the model with the model name in the provided path
+        """
+        
         check_path = os.path.join(self.checkpoint_path, self.model_name)
         self.net.load_state_dict(torch.load(check_path))
         print("Model loaded!")
     
     def train(self):
+        """
+        Train
+        """
+        
         self.net.train()
         n_plus = 0
         stop_epoch = 0
@@ -77,8 +92,8 @@ class Solver(object):
                 loss_norm.backward()
                 self.optimizer.step()
                 running_loss_norm += loss_norm.item()
-                # mi salvo la loss denormalizzata ogni 10 epoche per avere un riscontro
-                if ((epoch+1) % 10 == 0):
+                # saves denormalized loss for check
+                if ((epoch+1) % self.print_every == 0):
                     outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                     batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                     loss_denorm = self.train_criterion(outputs, batch_gt)
@@ -107,7 +122,7 @@ class Solver(object):
         self.elapsed = end-start
         self.stop_epoch = stop_epoch
         print_time(self.elapsed, stop_epoch)
-        if (n_plus >= 2):  
+        if (n_plus >= self.inc_val):  
             print('Finished Training because of Validation') 
         else:
             print('Finished Training')
@@ -115,6 +130,10 @@ class Solver(object):
         self.writer_val.close()
         
     def validation(self, epoch):
+        """
+        Validation
+        """
+        
         self.net.eval()
         val_loss_norm = 0.0
         val_loss_denorm = 0.0
@@ -124,7 +143,7 @@ class Solver(object):
                 outputs = self.net(batch_inputs)
                 loss_norm = self.train_criterion(outputs, batch_gt)
                 val_loss_norm += loss_norm.item()
-                if ((epoch+1) % 10 == 0):
+                if ((epoch+1) % self.print_every == 0):
                     outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                     batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
                     loss_denorm = self.train_criterion(outputs, batch_gt)
@@ -134,25 +153,30 @@ class Solver(object):
         return val_loss_norm/len(self.val_loader), val_loss_denorm/len(self.val_loader)
     
     def test(self):
+        """
+        Testing
+        """
+        
+        self.load_model()
         test_loss_norm = 0.0
         test_loss_denorm = 0.0
         self.n_cones = 0
         self.n_big_cones = 0
-        test_loss_norm_big_cones = 0
-        test_loss_norm_cones = 0
-        test_loss_denorm_big_cones = 0
-        test_loss_denorm_cones = 0
-        test_loss_denorm_x = 0
-        test_loss_denorm_y = 0
-        test_loss_denorm_d = 0
-        test_loss_denorm_x_cones = 0
-        test_loss_denorm_y_cones = 0
-        test_loss_denorm_d_cones = 0
-        test_loss_denorm_x_big_cones = 0
-        test_loss_denorm_y_big_cones = 0
-        test_loss_denorm_d_big_cones = 0
-        n_cones_near = 0
-        test_loss_denorm_d_cones_near = 0
+        self.n_cones_near = 0
+        test_loss_norm_big_cones = 0.0
+        test_loss_norm_cones = 0.0
+        test_loss_denorm_big_cones = 0.0
+        test_loss_denorm_cones = 0.0
+        test_loss_denorm_x = 0.0
+        test_loss_denorm_y = 0.0
+        test_loss_denorm_d = 0.0
+        test_loss_denorm_x_cones = 0.0
+        test_loss_denorm_y_cones = 0.0
+        test_loss_denorm_d_cones = 0.0
+        test_loss_denorm_x_big_cones = 0.0
+        test_loss_denorm_y_big_cones = 0.0
+        test_loss_denorm_d_big_cones = 0.0
+        test_loss_denorm_d_cones_near = 0.0
         self.net.eval()
         with torch.no_grad():
             for batch_inputs, batch_gt in self.test_loader:
@@ -190,30 +214,14 @@ class Solver(object):
                         test_loss_denorm_y_big_cones += loss_y.item()
                         test_loss_denorm_d_big_cones += loss_d.item()
                 for single_gt in batch_gt:
-                    if single_gt[0] <= self.th_x and (single_gt[1] <= self.th_y and single_gt[1] >= -self.th_y):
-                        n_cones_near += 1
+                    if single_gt[0] <= self.th_x and (single_gt[1] <= self.th_y/2 and single_gt[1] >= -self.th_y/2):
+                        self.n_cones_near += 1
                         test_loss_denorm_d_cones_near += loss_d.item()
                         
-        
-        print(f"Test Loss norm: {test_loss_norm/len(self.test_loader):.10f}, Test Loss denorm: {test_loss_denorm/len(self.test_loader):.10f}")
-        print(f"Test loss x: {test_loss_denorm_x/len(self.test_loader):.10f}, Test loss y: {test_loss_denorm_y/len(self.test_loader):.10f}")
-        print(f"Test loss distance: {test_loss_denorm_d/len(self.test_loader):.10f}")
-        
-        print(f"Test loss x cones: {test_loss_denorm_x_cones/self.n_cones:.10f}, Test loss y cones: {test_loss_denorm_y_cones/self.n_cones:.10f}")
-        print(f"Test loss distance cones: {test_loss_denorm_d_cones/self.n_cones:.10f}")
-        
-        print(f"Test loss x big cones: {test_loss_denorm_x_big_cones/self.n_big_cones:.10f}, Test loss y big cones: {test_loss_denorm_y_big_cones/self.n_big_cones:.10f}")
-        print(f"Test loss distance big cones: {test_loss_denorm_d_big_cones/self.n_big_cones:.10f}")
-        
-        print(f"Test loss distance near cones: {test_loss_denorm_d_cones_near/n_cones_near:.10f}")
-        
-        self.save_info_model(test_loss_norm, 
-                        test_loss_denorm, 
-                        test_loss_denorm_cones, 
-                        test_loss_denorm_big_cones, 
-                        test_loss_norm_cones, 
-                        test_loss_norm_big_cones,
-                        
+        self.save_info_model(
+                        test_loss_denorm/len(self.test_loader), 
+                        test_loss_denorm_cones/self.n_cones, 
+                        test_loss_denorm_big_cones/self.n_big_cones, 
                         test_loss_denorm_x/len(self.test_loader),
                         test_loss_denorm_y/len(self.test_loader),
                         test_loss_denorm_d/len(self.test_loader),
@@ -223,26 +231,14 @@ class Solver(object):
                         test_loss_denorm_x_big_cones/self.n_big_cones,
                         test_loss_denorm_y_big_cones/self.n_big_cones,
                         test_loss_denorm_d_big_cones/self.n_big_cones,
-                        test_loss_denorm_d_cones_near/n_cones_near
+                        test_loss_denorm_d_cones_near/self.n_cones_near
                         )
-        
         self.net.train()
     
-    def calc(self, inputs):
-        inputs = inputs.to(self.device)
-        self.net.eval()
-        out = self.net(inputs)
-        self.net.train()
-        out = out.to("cpu")
-        return out
-    
-    def save_info_model(self, test_loss_norm, 
+    def save_info_model(self, 
                         test_loss_denorm, 
                         test_loss_denorm_cones, 
                         test_loss_denorm_big_cones, 
-                        test_loss_norm_cones, 
-                        test_loss_norm_big_cones,
-                        
                         test_loss_denorm_x,
                         test_loss_denorm_y,
                         test_loss_denorm_d,
@@ -254,41 +250,57 @@ class Solver(object):
                         test_loss_denorm_d_big_cones,
                         test_loss_denorm_d_cones_near
                         ):
-        h, m, s = get_time(self.elapsed)
-        data_dict = {
-            "model name": self.model_name,
-            "numero di neuroni nel primo strato": self.net.layer1[0].out_features,
-            "batch size": self.batch_size, 
-            "seed": self.seed, 
-            "lr": self.lr,
-            "criterion train": self.train_criterion.__class__.__name__,
-            "delta": self.train_criterion.delta if self.train_criterion.__class__.__name__ == "HuberLoss" else "None",
-            "criterion test": self.test_criterion.__class__.__name__,
-            "epoche": self.epochs, 
-            "epocha di terminazione": self.stop_epoch, 
-            "numero di non miglioramenti max nel validation set": self.inc_val,
-            "stampa info ogni": self.print_every,
-            "test loss norm": (test_loss_norm / len(self.test_loader)), 
-            "test loss denorm": (test_loss_denorm / len(self.test_loader)),
-            "tempo di addestramento": f"{h} ore, {m} minuti e {s} secondi",
-            "numero coni 0": self.n_cones,
-            "numero coni 1": self.n_big_cones,
-            "loss norm coni 0": (test_loss_norm_cones/self.n_cones),
-            "loss norm coni 1": (test_loss_norm_big_cones/self.n_big_cones),
-            "loss denorm coni 0": (test_loss_denorm_cones/self.n_cones),
-            "loss denorm coni 1": (test_loss_denorm_big_cones/self.n_big_cones),
-            
-            "loss denorm x" : test_loss_denorm_x,
-            "loss denorm y" : test_loss_denorm_y,
-            "loss denorm d" : test_loss_denorm_d,
-            "loss denorm x coni 0" : test_loss_denorm_x_cones,
-            "loss denorm y coni 0" : test_loss_denorm_y_cones,
-            "loss denorm d coni 0" : test_loss_denorm_d_cones,
-            "loss denorm x coni 1" : test_loss_denorm_x_big_cones,
-            "loss denorm y coni 1" : test_loss_denorm_y_big_cones,
-            "loss denorm d coni 1" : test_loss_denorm_d_big_cones,
-            f"loss denorm d coni vicini ({self.th_x}, +-{self.th_y})" : test_loss_denorm_d_cones_near,
-            }
-        self.writer_info.add_text("info", json.dumps(data_dict, indent=4), 1)  
+        """
+        Saves the information of the model
+        """
+        
+        h, m, s = get_time(self.elapsed) if self.elapsed else 0, 0, 0
+        
+        markdown_table = f"""
+| Metric  | Value |
+|-------|----|
+| model name |  {self.model_name} |
+| # of neurons in first layer   |  {self.net.layer1[0].out_features} |
+| batch size |  {self.batch_size} |
+| seed |  {self.seed} |
+| lr |  {self.lr} |
+| train criterion |  {self.train_criterion.__class__.__name__} |
+| delta |  {self.train_criterion.delta if self.train_criterion.__class__.__name__ == "HuberLoss" else "None"} |
+| test criterion |  {self.test_criterion.__class__.__name__} |
+| epochs |  {self.epochs} |
+| stop epoch |  {self.stop_epoch} |
+| # of not inc |  {self.inc_val} |
+| print every |  {self.print_every} |
+| training time |  "{h} hours, {m} minutes e {s} seconds" |
+| test loss denorm |  {(test_loss_denorm)} |
+| test loss denorm small cones |  {(test_loss_denorm_cones)} |
+| # of small cones |  {self.n_cones} |
+| test loss denorm big cones|  {(test_loss_denorm_big_cones)} |
+| # of big cones |  {self.n_big_cones} |
+| loss denorm x |  {test_loss_denorm_x} |
+| loss denorm x small cones |  {test_loss_denorm_x_cones} |
+| loss denorm x big cones |  {test_loss_denorm_x_big_cones} |
+| loss denorm y |  {test_loss_denorm_y} |
+| loss denorm y small cones |  {test_loss_denorm_y_cones} |
+| loss denorm y big cones |  {test_loss_denorm_y_big_cones} |
+| loss denorm d |  {test_loss_denorm_d} |
+| loss denorm d small cones |  {test_loss_denorm_d_cones} |
+| loss denorm d big cones |  {test_loss_denorm_d_big_cones} |
+| loss denorm d near cones ({self.th_x}, +-{self.th_y/2})|  {test_loss_denorm_d_cones_near} |
+| # of near cones |  {self.n_cones_near} |
+        """
+        
+        self.writer_info.add_text("Results", markdown_table, 0)
         self.writer_info.flush()
         self.writer_info.close()
+        
+    def calc(self, inputs):
+        """
+        Returns the output of the network froma given input
+        """
+        inputs = inputs.to(self.device)
+        self.net.eval()
+        out = self.net(inputs)
+        self.net.train()
+        out = out.to("cpu")
+        return out
