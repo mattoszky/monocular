@@ -1,9 +1,9 @@
-# 📌 Monocular based 
+# 📌 Cones distance estimation using monocamera 
 
-## 📖 Descrizione
-Breve descrizione del progetto. Spiega il suo scopo e le funzionalità principali.
+## 📖 Description
+The goal of this project is to create a neural network for estimating the distance of cones described by bounding boxes in the context of autonomous driving under SAE formula.
 
-## 🚀 Installazione
+## 🚀 Installation
 Istruzioni su come installare il progetto. Esempio:
 ```bash
 # Clonare il repository
@@ -24,29 +24,25 @@ Esempi di utilizzo del progetto, con comandi o screenshot se necessario.
 npm start  # Oppure python main.py
 ```
 
-## 🛠 Tecnologie
-- [Linguaggio o framework principale]
-- [Altre tecnologie utilizzate]
+## 🛠 Technologies
+- Python
+- Pytorch
+- Tensorboard
 
-## 📂 Struttura del progetto
+## 📂 Project structure
 ```bash
-nome-progetto/
-│-- src/             # Codice sorgente
-│-- docs/            # Documentazione
-│-- tests/           # Test
-│-- README.md        # Questo file
+monocular/
+│-- src/                # Source Code
+│   │-- nets/           # Used Neural Nets
+│   │-- solvers/        # Classes to train and test nets
+│   │-- utils/          # Utility files
+│   │-- main.py         # Main file
+│   │-- main_denorm.py  # Different version of main file
+│-- data/               # all the data
+│-- models/             # saved models
+│-- runs/               # results
+│-- README.md           # this file
 ```
 
-## 📌 Contributi
-Se vuoi contribuire:
-1. Fai un fork del progetto
-2. Crea un nuovo branch (`git checkout -b feature-nuova`)
-3. Fai il commit delle modifiche (`git commit -m 'Aggiunto qualcosa'`)
-4. Fai il push (`git push origin feature-nuova`)
-5. Apri una Pull Request
-
-## 📜 Licenza
-Specifica la licenza del progetto (MIT, GPL, Apache, ecc.).
-
 ---
-✍ Creato da [Il tuo nome o username]
+✍ Made by Alessandro Mazzocchi

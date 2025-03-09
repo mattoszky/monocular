@@ -1,6 +1,6 @@
 
 from torch.utils.data import DataLoader, random_split, Subset
-from utils.Dataset import CustomDataset
+from utils.dataset import CustomDataset
 import numpy as np
 import torch
 import torch.nn as nn
