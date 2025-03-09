@@ -65,7 +65,7 @@ def draw_images(x0, y0, x1, y1, x_label, y_label, min, max):
 
 def main():
     # Caricamento dati
-    file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
+    file_path = "./../data/dataset/data20.dat"
     data = np.loadtxt(file_path)
 
     # Selezione dei dati

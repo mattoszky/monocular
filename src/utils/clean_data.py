@@ -5,7 +5,7 @@ def main():
     """
     Cleans the data deleting instances where x coordinates > 20
     """
-    data = np.loadtxt("./dati/dataset/dati_grezzi.dat")
+    data = np.loadtxt("./data/dataset/raw_data.dat")
     for i in range(0,data.shape[0]):
         if (data[i][1] == 3):
             data[i][1] = 1
@@ -14,7 +14,7 @@ def main():
     data_no_frame_number = data[:, 1:]
     data_filtered = data_no_frame_number[data_no_frame_number[:, 5] <= 20.0]
     big_cones = data_filtered[data_filtered[:, 0] == 1]
-    np.savetxt("./dati/dataset/dati_puliti_minore_20.dat", data_filtered, fmt="%.6f")
+    np.savetxt("./data/dataset/data20.dat", data_filtered, fmt="%.6f")
     print(big_cones.shape[0])
 
 if __name__ == "__main__":

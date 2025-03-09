@@ -1,0 +1,1 @@
+in questa cartella ci sono i file cones_mono_proj.dat in movimento con i frame in cui la macchina è ferma rimossi

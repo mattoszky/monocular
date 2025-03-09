@@ -15,7 +15,7 @@ def main():
     args = parser.parse_args()
     
     #carico i dati
-    file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
+    file_path = "./../data/dataset/data20.dat"
     data = np.loadtxt(file_path)
     
     

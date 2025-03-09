@@ -1,0 +1,1 @@
+in questa cartella c'è il dataset aggregato ancora con il numero di frame e le classi tra 0 e 3

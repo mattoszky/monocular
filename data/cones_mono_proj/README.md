@@ -1,0 +1,1 @@
+in questa cartella ci sono tutti i file cones_mono_proj.dat significativi (non quelli senza dati)

@@ -1,0 +1,432 @@
+modello1
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 32,
+	seed: 1200,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 202,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008616788,
+	test loss denorm: 0.3594700062,
+	train time: 2 ore, 15 minuti e 42 secondi
+
+	numero coni 0: 66880,
+	numero coni 1: 1877,
+	loss norm coni 0: 0.0008617547,
+	loss norm coni 1: 0.0008600717,
+	loss denorm coni 0: 0.3594854314,
+	loss denorm coni 1: 0.3593339500
+}
+
+modello2
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 64,
+	seed: 1200,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 120,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009701024,
+	test loss denorm: 0.4142683793,
+	train time: 0 ore, 41 minuti e 10 secondi
+
+	numero coni 0: 66880,
+	numero coni 1: 1877,
+	loss norm coni 0: 0.0009703695,
+	loss norm coni 1: 0.0009704363,
+	loss denorm coni 0: 0.4143323489,
+	loss denorm coni 1: 0.4154582210
+}
+
+modello3
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 32,
+	seed: 12,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 58,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009438377,
+	test loss denorm: 0.4044055983,
+	train time: 0 ore, 38 minuti e 42 secondi
+
+	numero coni 0: 66888,
+	numero coni 1: 1869,
+	loss norm coni 0: 0.0009435340,
+	loss norm coni 1: 0.0009583545,
+	loss denorm coni 0: 0.4042830838,
+	loss denorm coni 1: 0.4103255223
+}
+
+modello4
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 32,
+	seed: 18,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 68,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009242015,
+	test loss denorm: 0.3833708149,
+	train time: 0 ore, 45 minuti e 55 secondi
+
+	numero coni 0: 66782,
+	numero coni 1: 1975,
+	loss norm coni 0: 0.0009241663,
+	loss norm coni 1: 0.0009223831,
+	loss denorm coni 0: 0.3833570897,
+	loss denorm coni 1: 0.3825378252
+}
+
+modello5
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 64,
+	seed: 18,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 68,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009467700,
+	test loss denorm: 0.3975432985,
+	train time: 0 ore, 22 minuti e 46 secondi
+
+	numero coni 0: 66782,
+	numero coni 1: 1975,
+	loss norm coni 0: 0.0009465772,
+	loss norm coni 1: 0.0009441652,
+	loss denorm coni 0: 0.3974382243,
+	loss denorm coni 1: 0.3967199146
+}
+
+modello6
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 32,
+	seed: 18,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 69,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0009398921,
+	test loss denorm: 0.3898060905,
+	train time: 0 ore, 46 minuti e 25 secondi
+
+	numero coni 0: 66782,
+	numero coni 1: 1975,
+	loss norm coni 0: 0.0009400236,
+	loss norm coni 1: 0.0009322600,
+	loss denorm coni 0: 0.3898667654,
+	loss denorm coni 1: 0.3863147275
+}
+
+modello7
+{
+	numero di neuroni nel primo strato: 512,
+	batch size: 32,
+	seed: 18,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 6,
+	test loss norm: 0.0008582555,
+	test loss denorm: 0.3576091917,
+	train time: 3 ore, 22 minuti e 45 secondi
+
+	numero coni 0: 66782,
+	numero coni 1: 1975,
+	loss norm coni 0: 0.0008584198,
+	loss norm coni 1: 0.0008505214,
+	loss denorm coni 0: 0.3576690103,
+	loss denorm coni 1: 0.3546460001
+}
+
+modello8
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 18,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 6,
+	test loss norm: 0.0008614471,
+	test loss denorm: 0.3577975193,
+	train time: 3 ore, 1 minuti e 11 secondi
+
+	numero coni 0: 66782,
+	numero coni 1: 1975,
+	loss norm coni 0: 0.0008616648,
+	loss norm coni 1: 0.0008510055,
+	loss denorm coni 0: 0.3578807422,
+	loss denorm coni 1: 0.3536367298
+}
+
+modello8
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 18,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 6,
+	test loss norm: 0.0008551194,
+	test loss denorm: 0.3548271129,
+	train time: 14 ore, 4 minuti e 40 secondi
+
+	numero coni 0: 66782,
+	numero coni 1: 1975,
+	loss norm coni 0: 0.0008552221,
+	loss norm coni 1: 0.0008492800,
+	loss denorm coni 0: 0.3548575452,
+	loss denorm coni 1: 0.3527505203
+}
+
+modello9
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 10,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 93,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009184325,
+	test loss denorm: 0.3885359786,
+	train time: 0 ore, 55 minuti e 22 secondi
+
+	numero coni 0: 66920,
+	numero coni 1: 1837,
+	loss norm coni 0: 0.0009184983,
+	loss norm coni 1: 0.0009186517,
+	loss denorm coni 0: 0.3885560539,
+	loss denorm coni 1: 0.3889352936
+}
+
+modello10
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 10,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008497494,
+	test loss denorm: 0.3539228529,
+	train time: 3 ore, 6 minuti e 30 secondi
+
+	numero coni 0: 66920,
+	numero coni 1: 1837,
+	loss norm coni 0: 0.0008499075,
+	loss norm coni 1: 0.0008468290,
+	loss denorm coni 0: 0.3539856430,
+	loss denorm coni 1: 0.3528777113
+}
+
+modello11
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 64,
+	seed: 10,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008646825,
+	test loss denorm: 0.3610562039,
+	train time: 1 ore, 32 minuti e 34 secondi
+
+	numero coni 0: 66920,
+	numero coni 1: 1837,
+	loss norm coni 0: 0.0008648984,
+	loss norm coni 1: 0.0008676905,
+	loss denorm coni 0: 0.3611595351,
+	loss denorm coni 1: 0.3620654778
+}
+
+modello12
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 64,
+	seed: 0,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0433421069,
+	test loss denorm: 23.9947211050,
+	train time: 1 ore, 33 minuti e 9 secondi
+
+	numero coni 0: 66894,
+	numero coni 1: 1863,
+	loss norm coni 0: 0.0433461768,
+	loss norm coni 1: 0.0433421618,
+	loss denorm coni 0: 23.9969276501,
+	loss denorm coni 1: 23.9926470353
+}
+
+modello12
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 64,
+	seed: 70,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 145,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0433828697,
+	test loss denorm: 24.1166962895,
+	train time: 0 ore, 45 minuti e 55 secondi
+
+	numero coni 0: 66897,
+	numero coni 1: 1860,
+	loss norm coni 0: 0.0433707750,
+	loss norm coni 1: 0.0436136675,
+	loss denorm coni 0: 24.1093531338,
+	loss denorm coni 1: 24.1785861146
+}
+
+modello12
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 64,
+	seed: 80,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008946829,
+	test loss denorm: 0.3731489288,
+	train time: 1 ore, 34 minuti e 39 secondi
+
+	numero coni 0: 66903,
+	numero coni 1: 1854,
+	loss norm coni 0: 0.0008950793,
+	loss norm coni 1: 0.0008886942,
+	loss denorm coni 0: 0.3733254597,
+	loss denorm coni 1: 0.3704224989
+}
+
+modello13
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 80,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008923013,
+	test loss denorm: 0.3733446947,
+	train time: 3 ore, 1 minuti e 54 secondi
+
+	numero coni 0: 66903,
+	numero coni 1: 1854,
+	loss norm coni 0: 0.0008923943,
+	loss norm coni 1: 0.0008910903,
+	loss denorm coni 0: 0.3733813154,
+	loss denorm coni 1: 0.3729932998
+}
+
+modello14
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 80,
+	lr: 0.001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0009061556,
+	test loss denorm: 0.3819662471,
+	train time: 2 ore, 56 minuti e 10 secondi
+
+	numero coni 0: 66903,
+	numero coni 1: 1854,
+	loss norm coni 0: 0.0009062817,
+	loss norm coni 1: 0.0009038731,
+	loss denorm coni 0: 0.3820214145,
+	loss denorm coni 1: 0.3810170672
+}
+
+modello15
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 80,
+	lr: 0.001,
+	epoche: 10,
+	epocha di terminazione: 10,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0010037907,
+	test loss denorm: 0.4242828166,
+	train time: 0 ore, 11 minuti e 58 secondi
+
+	numero coni 0: 66903,
+	numero coni 1: 1854,
+	loss norm coni 0: 0.0010034702,
+	loss norm coni 1: 0.0010167506,
+	loss denorm coni 0: 0.4241726729,
+	loss denorm coni 1: 0.4289812583
+}
+
+modello15_denorm
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 80,
+	lr: 0.001,
+	epoche: 10,
+	epocha di terminazione: 10,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0004653327,
+	test loss denorm: 0.4969432328,
+	train time: 0 ore, 5 minuti e 32 secondi
+
+	numero coni 0: 66903,
+	numero coni 1: 1854,
+	loss norm coni 0: 0.0000149470,
+	loss norm coni 1: 0.0005393743,
+	loss denorm coni 0: 0.4967739918,
+	loss denorm coni 1: 0.5040552661
+}
+
+
+modello15_norm
+{
+	numero di neuroni nel primo strato: 256,
+	batch size: 32,
+	seed: 80,
+	lr: 0.001,
+	epoche: 10,
+	epocha di terminazione: 10,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0010037907,
+	test loss denorm: 0.4242828166,
+	train time: 0 ore, 6 minuti e 0 secondi
+
+	numero coni 0: 66903,
+	numero coni 1: 1854,
+	loss norm coni 0: 0.0010034702,
+	loss norm coni 1: 0.0010167506,
+	loss denorm coni 0: 0.4241726729,
+	loss denorm coni 1: 0.4289812583
+}
+
+
+
+
+
+
+
+
+
+
+
+

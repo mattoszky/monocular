@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import argparse
 
-from utils.Dataset import CustomDataset
+from utils.dataset import CustomDataset
 from solvers.Solver_Denorm import Solver_Denorm
 
 def main():
@@ -19,7 +19,7 @@ def main():
     args = parser.parse_args()
     
     # loads the data
-    file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
+    file_path = "./../data/dataset/data20.dat"
     data = np.loadtxt(file_path)
 
     # gets inputs and GTs

@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import argparse
 
-from utils.Dataset import CustomDataset
+from utils.dataset import CustomDataset
 from solvers.Solver import Solver
 
 def main():
@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
     
     # loads the data
-    file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
+    file_path = "./../data/dataset/data20.dat"
     data = np.loadtxt(file_path)
     
     # gets inputs and GTs
@@ -97,7 +97,7 @@ def main():
                 test_criterion=test_criterion,
                 inc_val=inc_val,
                 batch_size=batch_size,
-                checkpoint_path="../modelli",
+                checkpoint_path="../models",
                 model_name=args.mn, 
                 print_every=print_every,
                 th_x=th_x,

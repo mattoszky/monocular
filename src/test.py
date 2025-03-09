@@ -13,7 +13,7 @@ import os
 import torch
 from nets.rete256 import Rete256
 import numpy as np
-from utils.Dataset import CustomDataset
+from utils.dataset import CustomDataset
 from torch.utils.data import DataLoader
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
@@ -42,7 +42,7 @@ batch_size = 32
 torch.manual_seed(seed)
 h, m, s = 2, 55, 4
 
-file_path = "./../dati/dataset/dati_puliti_minore_20.dat"
+file_path = "./../data/dataset/data.dat"
 data = np.loadtxt(file_path)
 
 inputs = data[:, :5]

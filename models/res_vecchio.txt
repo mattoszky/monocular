@@ -1,0 +1,251 @@
+modello1
+{
+	seed: 20,
+	lr: 0.001,
+	epoche: 200,
+	epocha di terminazione: 34,
+	numero di incrementi max nel validation set: 3,
+	test loss norm: 0.0009650409,
+	test loss denorm: 0.4141595375
+}
+
+modello2
+{
+	seed: 20,
+	lr: 0.001,
+	epoche: 200,
+	epocha di terminazione: 35,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009894232,
+	test loss denorm: 0.4176429861
+}
+
+modello3
+{
+	seed: 20,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 102,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008706723,
+	test loss denorm: 0.3630247434
+}
+
+modello4
+{
+	seed: 20,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 200,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008749418,
+	test loss denorm: 0.3675200278
+}
+
+modello5
+{
+	seed: 10,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 73,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0432756624,
+	test loss denorm: 24.0537213747
+}
+
+modello6
+{
+	seed: 0,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 31,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009628986,
+	test loss denorm: 0.4092057182
+}
+
+modello7
+{
+	seed: 30,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 195,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008585708,
+	test loss denorm: 0.3580311148
+}
+
+# rete che parte da 2046
+
+modello8
+{
+	seed: 30,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 55,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008851825,
+	test loss denorm: 0.3680665383
+}
+
+modello9
+{
+	seed: 30,
+	lr: 0.001,
+	epoche: 200,
+	epocha di terminazione: 55,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009269509,
+	test loss denorm: 0.3971232710
+}
+
+
+modello10
+{
+	seed: 0,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 200,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008529889,
+	test loss denorm: 0.3557627872
+}
+
+modello11
+{
+	seed: 40,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 86,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009590775,
+	test loss denorm: 0.4085436034
+}
+
+modello12 #bs=64
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 200,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008574638,
+	test loss denorm: 0.3584206435
+}
+
+modello13 #bs=32
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 200,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008685815,
+	test loss denorm: 0.3628701769
+}
+
+#rete a 1024
+
+modello14
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 43,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009186196,
+	test loss denorm: 0.3857733360
+}
+
+modello15
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 200,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008577238,
+	test loss denorm: 0.3592844394
+}
+
+modello16 #bs=64
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 200,
+	epocha di terminazione: 200,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008643129,
+	test loss denorm: 0.3606157235
+}
+
+modello17 #bs=64
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008576358,
+	test loss denorm: 0.3575806774
+}
+
+modello18 #bs=64
+{
+	seed: 90,
+	lr: 0.001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 5,
+	test loss norm: 0.0008798550,
+	test loss denorm: 0.3724968287
+}
+
+modello19 #bs=64
+{
+	seed: 90,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 37,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009609196,
+	test loss denorm: 0.4179603730
+}
+
+modello20 #bs=64
+{
+	seed: 120,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 300,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0008521461,
+	test loss denorm: 0.3548376962
+}
+
+#rete a 512
+
+
+modello21 #bs=64
+{
+	seed: 120,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 94,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009239529,
+	test loss denorm: 0.3868947072
+}
+
+modello22
+{
+	seed: 120,
+	lr: 0.0001,
+	epoche: 300,
+	epocha di terminazione: 50,
+	numero di incrementi max nel validation set: 4,
+	test loss norm: 0.0009393970,
+	test loss denorm: 0.4238011251
+}
+
+
