@@ -24,12 +24,13 @@ export PATH=$HOME/.local/bin:$PATH
 Now you can train your own model by setting the parameters in ```main.py```.
 You can choose the name of the model with the option ```--mn [model name]```.
 For the other params you have to change them manually inside the ```main.py``` file and, if you want to change the type of net, in the ```solver.py``` file.
+You can also run a denorm version of the code by means of `main_denorm.py` associated with `solver_denorm.py`.
 
 When you are ready do as follows:
 
 ```bash
 # start train
-python3 mian.py --mn your_model_name
+python3 main.py --mn your_model_name
 ```
 
 After the training you can see the result with `tensorboard`. To do so go to `monocular` dir, the project directory, and run the following command:
