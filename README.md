@@ -15,6 +15,9 @@ cd monocular
 
 # dependecy installation
 pip install -r requirements.txt
+
+# setup for tensorboard
+export PATH=$HOME/.local/bin:$PATH
 ```
 
 ## 🔧 Usage
