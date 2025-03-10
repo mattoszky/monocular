@@ -29,6 +29,14 @@ When you are ready do as follows:
 python3 mian.py --mn your_model_name
 ```
 
+After the training you can see the result with `tensorboard`. To do so you need to reboot your PC and then, after returning in the project directory, you need to launch the following command:
+
+```bash
+# start tensorboard session
+tensorboard --logdir=runs/
+```
+Then you have to click on the link and you are in, enjoy!
+
 ## 🛠 Technologies
 - Python
 - Pytorch
