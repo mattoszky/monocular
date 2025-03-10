@@ -18,9 +18,9 @@ pip install -r requirements.txt
 ```
 
 ## 🔧 Usage
-Now you can train your own model by setting the parameters in ```bashmain.py```.
-You can choose the name of the model with the option ```bash--mn [model name]```.
-For the other params you have to change them manually inside the ```bashmain.py``` file and, if you want to change the type of net, in the ```bashsolver.py``` file.
+Now you can train your own model by setting the parameters in ```main.py```.
+You can choose the name of the model with the option ```--mn [model name]```.
+For the other params you have to change them manually inside the ```main.py``` file and, if you want to change the type of net, in the ```solver.py``` file.
 
 When you are ready do as follows:
 
