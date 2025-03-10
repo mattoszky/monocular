@@ -32,7 +32,7 @@ When you are ready do as follows:
 python3 mian.py --mn your_model_name
 ```
 
-After the training you can see the result with `tensorboard`. To do so you need to reboot your PC and then, after returning in the project directory, you need to launch the following command:
+After the training you can see the result with `tensorboard`. To do so go to `monocular` dir, the project directory, and run the following command:
 
 ```bash
 # start tensorboard session
@@ -54,10 +54,10 @@ monocular/
 │   │-- utils/          # Utility files
 │   │-- main.py         # Main file
 │   │-- main_denorm.py  # Different version of main file
-│-- data/               # all the data
-│-- models/             # saved models
-│-- runs/               # results
-│-- README.md           # this file
+│-- data/               # All the data
+│-- models/             # Saved models
+│-- runs/               # Results
+│-- README.md           # This file
 ```
 
 ---

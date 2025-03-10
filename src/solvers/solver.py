@@ -23,7 +23,7 @@ def get_time(elapsed):
 def print_time(elapsed, stop_epoch):
     hours, minutes, seconds = get_time(elapsed)
     print(f"stop_epoch: {stop_epoch}")
-    print(f"Training time: {hours} hours, {minutes} minutes e {seconds} seconds")    
+    print(f"Training time: {hours} hours, {minutes} minutes and {seconds} seconds")    
 
 class Solver(object):
     """

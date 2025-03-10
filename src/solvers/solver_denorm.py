@@ -246,7 +246,7 @@ class Solver_Denorm(object):
 | stop epoch |  {self.stop_epoch} |
 | # of not inc |  {self.inc_val} |
 | print every |  {self.print_every} |
-| training time |  "{h} hours, {m} minutes e {s} seconds" |
+| training time |  "{h} hours, {m} minutes and {s} seconds" |
 | test loss |  {(test_loss)} |
 | test loss small cones |  {(test_loss_cones)} |
 | # of small cones |  {self.n_cones} |
