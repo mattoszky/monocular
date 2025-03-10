@@ -81,7 +81,7 @@ def main():
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     
     
-    max_epoch = 2
+    max_epoch = 300
     lr = 0.0001
     inc_val = 30
     print_every = 10
