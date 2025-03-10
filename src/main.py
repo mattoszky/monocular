@@ -6,10 +6,10 @@ import torch.nn as nn
 import argparse
 
 from utils.dataset import CustomDataset
-from solvers.Solver import Solver
+from solvers.solver import Solver
 
 def main():
-    seed = 254
+    seed = 199
     torch.manual_seed(seed)
     
     # takes argument from command line
@@ -24,6 +24,12 @@ def main():
     # gets inputs and GTs
     inputs = data[:, :5]
     gt = data[:, 5:]
+    
+    # uncomment for class + TL
+    # inputs = inputs[:, :3]
+    
+    # uncomment for class + HW
+    inputs = inputs[:, [0, -2, -1]]
     
     # train-validation-test sizes
     total_size = len(inputs)
@@ -103,6 +109,7 @@ def main():
                 th_x=th_x,
                 th_y=th_y
             )
+    #solver.load_model()
     solver.train()
     solver.test()
 

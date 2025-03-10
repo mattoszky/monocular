@@ -1,10 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 def main():
     """
     Cleans the data deleting instances where x coordinates > 20
     """
+    
     data = np.loadtxt("./data/dataset/raw_data.dat")
     for i in range(0,data.shape[0]):
         if (data[i][1] == 3):

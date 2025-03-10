@@ -1,11 +1,17 @@
 
 import torch.nn as nn
 
-class Rete256V2(nn.Module):
+class Net256(nn.Module):
+    """
+    Neural Net with 256 neurons on first hidden layer and drop to 2 by the power of 2
+    5 neurons in input
+    2 in output
+    """
+    
     def __init__(self):
-        super(Rete256V2, self).__init__()
+        super(Net256, self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Linear(3, 256),
+            nn.Linear(5, 256),
             nn.ReLU(),
         )
         self.layer2 = nn.Sequential(

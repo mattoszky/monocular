@@ -6,11 +6,11 @@ import torch.nn as nn
 import argparse
 
 from utils.dataset import CustomDataset
-from solvers.Solver_Denorm import Solver_Denorm
+from solvers.solver_denorm import Solver_Denorm
 
 def main():
     # sets the seed
-    seed = 287
+    seed = 254
     torch.manual_seed(seed)
 
     # takes argument from command line
@@ -63,7 +63,7 @@ def main():
                 test_criterion=test_criterion,
                 inc_val=inc_val,
                 batch_size=batch_size,
-                checkpoint_path="../modelli",
+                checkpoint_path="../models",
                 model_name=args.mn, 
                 print_every=print_every,
                 th_x=th_x,

@@ -1,9 +1,15 @@
 
 import torch.nn as nn
 
-class Rete512(nn.Module):
+class Net512(nn.Module):
+    """
+    Neural Net with 512 neurons on first hidden layer and drop to 2 by the power of 2
+    5 neurons in input
+    2 in output
+    """
+    
     def __init__(self):
-        super(Rete512, self).__init__()
+        super(Net512, self).__init__()
         self.layer1 = nn.Sequential(
             nn.Linear(5, 512),
             nn.ReLU(),

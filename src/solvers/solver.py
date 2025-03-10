@@ -5,8 +5,10 @@ import time
 
 from torch.utils.tensorboard import SummaryWriter
 
-from nets.rete256 import Rete256
-from nets.rete512 import Rete512
+from nets.net256 import Net256
+from nets.net512 import Net512
+from nets.net256_v2 import Net256V2
+
 
 def get_time(elapsed):
     """
@@ -28,10 +30,10 @@ class Solver(object):
     Solver for training and testing.
     """
     
-    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every, th_x=5, th_y=5):
+    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every, th_x, th_y):
         self.seed = seed
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = Rete512().to(self.device)
+        self.net = Net256V2().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
@@ -94,8 +96,8 @@ class Solver(object):
                 running_loss_norm += loss_norm.item()
                 # saves denormalized loss for check
                 if ((epoch+1) % self.print_every == 0):
-                    outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
-                    batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
+                    outputs = outputs * (self.max_vals[len(self.max_vals)-2:] - self.min_vals[len(self.min_vals)-2:]) + self.min_vals[len(self.min_vals)-2:]
+                    batch_gt = batch_gt * (self.max_vals[len(self.max_vals)-2:] - self.min_vals[len(self.min_vals)-2:]) + self.min_vals[len(self.min_vals)-2:]
                     loss_denorm = self.train_criterion(outputs, batch_gt)
                     running_loss_denorm += loss_denorm.item()
             self.writer_train.add_scalar('loss', running_loss_norm/len(self.train_loader), epoch+1)
@@ -144,8 +146,8 @@ class Solver(object):
                 loss_norm = self.train_criterion(outputs, batch_gt)
                 val_loss_norm += loss_norm.item()
                 if ((epoch+1) % self.print_every == 0):
-                    outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
-                    batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
+                    outputs = outputs * (self.max_vals[len(self.max_vals)-2:] - self.min_vals[len(self.min_vals)-2:]) + self.min_vals[len(self.min_vals)-2:]
+                    batch_gt = batch_gt * (self.max_vals[len(self.max_vals)-2:] - self.min_vals[len(self.min_vals)-2:]) + self.min_vals[len(self.min_vals)-2:]
                     loss_denorm = self.train_criterion(outputs, batch_gt)
                     val_loss_denorm += loss_denorm.item()
         self.writer_val.add_scalar('loss', val_loss_norm/len(self.val_loader), epoch+1)
@@ -183,8 +185,8 @@ class Solver(object):
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 outputs = self.net(batch_inputs)
                 loss_norm = self.test_criterion(outputs, batch_gt)
-                outputs = outputs * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
-                batch_gt = batch_gt * (self.max_vals[5:] - self.min_vals[5:]) + self.min_vals[5:]
+                outputs = outputs * (self.max_vals[len(self.max_vals)-2:] - self.min_vals[len(self.min_vals)-2:]) + self.min_vals[len(self.min_vals)-2:]
+                batch_gt = batch_gt * (self.max_vals[len(self.max_vals)-2:] - self.min_vals[len(self.min_vals)-2:]) + self.min_vals[len(self.min_vals)-2:]
                 loss_denorm = self.test_criterion(outputs, batch_gt)
                 test_loss_norm += loss_norm.item()
                 test_loss_denorm += loss_denorm.item()
@@ -254,7 +256,7 @@ class Solver(object):
         Saves the information of the model
         """
         
-        h, m, s = get_time(self.elapsed) if self.elapsed else 0, 0, 0
+        h, m, s = get_time(self.elapsed) if hasattr(self, 'elapsed') else (0, 0, 0)
         
         markdown_table = f"""
 | Metric  | Value |
@@ -268,10 +270,10 @@ class Solver(object):
 | delta |  {self.train_criterion.delta if self.train_criterion.__class__.__name__ == "HuberLoss" else "None"} |
 | test criterion |  {self.test_criterion.__class__.__name__} |
 | epochs |  {self.epochs} |
-| stop epoch |  {self.stop_epoch} |
+| stop epoch |  {self.stop_epoch if hasattr(self, 'stop_epoch') else "None"} |
 | # of not inc |  {self.inc_val} |
 | print every |  {self.print_every} |
-| training time |  "{h} hours, {m} minutes e {s} seconds" |
+| training time |  "{h} hours, {m} minutes and {s} seconds" |
 | test loss denorm |  {(test_loss_denorm)} |
 | test loss denorm small cones |  {(test_loss_denorm_cones)} |
 | # of small cones |  {self.n_cones} |
@@ -296,11 +298,20 @@ class Solver(object):
         
     def calc(self, inputs):
         """
-        Returns the output of the network froma given input
+        Returns the output of the network from a given input
         """
+        
         inputs = inputs.to(self.device)
         self.net.eval()
         out = self.net(inputs)
         self.net.train()
         out = out.to("cpu")
         return out
+    
+    def get_out(checkpoint_path, model_name, inputs):
+        model = torch.load(os.path.join(checkpoint_path, model_name), weights_only=False)
+        model.eval()
+        out = model(inputs)
+        model.train()
+        return out
+        

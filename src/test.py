@@ -9,6 +9,8 @@ name = "256_" + str(seed) + "_" + loss + "_" + ((str(delta).replace('.', '_') + 
 
 print(name)
 '''
+
+'''
 import os
 import torch
 from nets.rete256 import Rete256
@@ -182,43 +184,81 @@ print(f"Test loss distance big cones: {test_loss_denorm_d_big_cones/n_big_cones:
 print(f"Test loss distance near cones: {test_loss_denorm_d_cones_near/n_cones_near:.10f}")
 
 net.train()
+'''
+import os
+import torch
+import numpy as np
+from utils.dataset import CustomDataset
+from torch.utils.data import DataLoader
+import torch.nn as nn
+from torch.utils.tensorboard import SummaryWriter
+import json
+writer_info = SummaryWriter('./../runs/' + "512_199_MSE_32_0_0001" + '/info')
 
 markdown_table = f"""
 | Metric  | Value |
 |-------|----|
-| model name |  {model_name} |
-| # of neurons in first layer   |  {net.layer1[0].out_features} |
-| batch size |  {batch_size} |
-| seed |  {seed} |
-| lr |  {lr} |
-| train criterion |  {train_criterion.__class__.__name__} |
-| delta |  {train_criterion.delta if train_criterion.__class__.__name__ == "HuberLoss" else "None"} |
-| test criterion |  {test_criterion.__class__.__name__} |
-| epochs |  {epochs} |
-| stop epoch |  {stop_epoch} |
-| # of not inc |  {inc_val} |
-| print every |  {print_every} |
-| training time |  "{h} hours, {m} minutes e {s} seconds" |
-| test loss denorm |  {(test_loss_denorm / len(test_loader))} |
-| test loss denorm small cones |  {(test_loss_denorm_cones/n_cones)} |
-| # of small cones |  {n_cones} |
-| test loss denorm big cones|  {(test_loss_denorm_big_cones/n_big_cones)} |
-| # of big cones |  {n_big_cones} |
-| loss denorm x |  {test_loss_denorm_x/len(test_loader)} |
-| loss denorm x small cones |  {test_loss_denorm_x_cones/n_cones} |
-| loss denorm x big cones |  {test_loss_denorm_x_big_cones/n_big_cones} |
-| loss denorm y |  {test_loss_denorm_y/len(test_loader)} |
-| loss denorm y small cones |  {test_loss_denorm_y_cones/n_cones} |
-| loss denorm y big cones |  {test_loss_denorm_y_big_cones/n_big_cones} |
-| loss denorm d |  {test_loss_denorm_d/len(test_loader)} |
-| loss denorm d small cones |  {test_loss_denorm_d_cones/n_cones} |
-| loss denorm d big cones |  {test_loss_denorm_d_big_cones/n_big_cones} |
-| loss denorm d near cones ({th_x}, +-{th_y/2}) |  {test_loss_denorm_d_cones_near/n_cones_near} |
-| # of near cones |  {n_cones_near} |
+| model name |  {"512_199_MSE_32_0_0001"} |
+| # of neurons in first layer   |  512 |
+| batch size |  32 |
+| seed |  199 |
+| lr |  0.0001 |
+| train criterion |  MSELoss |
+| delta |  {"None"} |
+| test criterion |  L1Loss |
+| epochs |  300 |
+| stop epoch |  245 |
+| # of not inc |  30 |
+| print every |  10 |
+| training time |  "2 hours, 59 minutes e 40 seconds" |
+| test loss denorm |  0.3349150859154036 |
+| test loss denorm small cones |  0.33496200191284775 |
+| # of small cones |  66939 |
+| test loss denorm big cones|  0.33323848783353555 |
+| # of big cones |  1818 |
+| loss denorm x |  0.4758887684263858 |
+| loss denorm x small cones |  0.4759808099227646 |
+| loss denorm x big cones |  0.4726278956381216 |
+| loss denorm y |  0.1939414034044215 |
+| loss denorm y small cones |  0.19394319390291323 |
+| loss denorm y big cones |  0.1938490800289488 |
+| loss denorm d |  0.5221609153089412 |
+| loss denorm d small cones |  0.52226090338015 |
+| loss denorm d big cones |  0.518607454723318 |
+| loss denorm d near cones (10, +-2.5) |  0.5105377173626491 |
+| # of near cones |  24138 |
 """
+
 
 # Scrittura della tabella nel SummaryWriter
 writer_info.add_text("Results", markdown_table, 0)
 #writer_info.add_text("info", json.dumps(data_dict, indent=4), 1)  
 writer_info.flush()
 writer_info.close()
+
+'''
+
+import time
+
+def get_time(elapsed):
+    """
+    Returns h, m, s from a given elapsed time
+    """
+    h = int(elapsed // 3600)
+    m = int((elapsed % 3600) // 60)
+    s = int(elapsed % 60)
+    return h, m, s
+
+start = time.time()
+for i in range(100000000):
+    None
+stop = time.time()
+
+elapsed = None
+
+h, m, s = get_time(elapsed) if elapsed else (0, 0, 0)
+
+print(h)
+print(m)
+print(s)
+'''

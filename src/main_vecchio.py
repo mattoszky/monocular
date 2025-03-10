@@ -4,8 +4,8 @@ from utils.dataset import CustomDataset
 import numpy as np
 import torch
 import torch.nn as nn
-from solvers.Solver import Solver
-from solvers.Solver_Denorm import Solver_Denorm
+from solvers.solver import Solver
+from solvers.solver_denorm import Solver_Denorm
 import argparse
 
 def main():
@@ -94,7 +94,7 @@ def main():
                     th_x=10,
                     th_y=5
                 )
-        #solver.load_model()
+        solver.load_model()
         solver.train()
         #solver.load_model()
         solver.test()

@@ -2,12 +2,11 @@ import torch
 import torch.optim as optim
 import os
 import time
-import json
 
 from torch.utils.tensorboard import SummaryWriter
 
-from nets.rete256 import Rete256
-from nets.rete512 import Rete512
+from nets.net256 import Net256
+from nets.net512 import Net512
 
 def get_time(elapsed):
     """
@@ -21,17 +20,17 @@ def get_time(elapsed):
 def print_time(elapsed, stop_epoch):
     hours, minutes, seconds = get_time(elapsed)
     print(f"stop_epoch: {stop_epoch}")
-    print(f"Training time: {hours} hours, {minutes} minutes e {seconds} seconds")  
+    print(f"Training time: {hours} hours, {minutes} minutes and {seconds} seconds")  
     
 class Solver_Denorm(object):
     """
     Solver for training and testing.
     """
 
-    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every, th_x=5, th_y=5):
+    def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, print_every, th_x, th_y):
         self.seed = seed
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = Rete512().to(self.device)
+        self.net = Net256().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
@@ -40,8 +39,6 @@ class Solver_Denorm(object):
         self.train_loader = train_loader
         self.val_loader = val_loader
         self.test_loader = test_loader
-        self.min_vals = min_vals.to(self.device)
-        self.max_vals = max_vals.to(self.device)
         self.inc_val = inc_val
         self.batch_size = batch_size
         self.checkpoint_path = checkpoint_path
@@ -87,7 +84,7 @@ class Solver_Denorm(object):
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 self.optimizer.zero_grad()
                 outputs = self.net(batch_inputs)
-                loss = self.criterion(outputs, batch_gt)
+                loss = self.train_criterion(outputs, batch_gt)
                 loss.backward()
                 self.optimizer.step()
                 running_loss += loss.item()
@@ -134,7 +131,7 @@ class Solver_Denorm(object):
             for batch_inputs, batch_gt in self.val_loader:
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 outputs = self.net(batch_inputs)
-                loss = self.criterion(outputs, batch_gt)
+                loss = self.train_criterion(outputs, batch_gt)
                 val_loss += loss.item()
         self.writer_val.add_scalar('loss', val_loss/len(self.val_loader), epoch+1)
         self.net.train()
@@ -166,7 +163,7 @@ class Solver_Denorm(object):
             for batch_inputs, batch_gt in self.test_loader:
                 batch_inputs, batch_gt = batch_inputs.to(self.device), batch_gt.to(self.device)
                 outputs = self.net(batch_inputs)
-                loss = self.criterion(outputs, batch_gt)
+                loss = self.test_criterion(outputs, batch_gt)
                 test_loss += loss.item()
                 x_out, y_out = outputs[:,0], outputs[:,1]
                 x_gt, y_gt = batch_gt[:,0], batch_gt[:,1]
@@ -232,7 +229,7 @@ class Solver_Denorm(object):
         Saves the information of the model
         """
         
-        h, m, s = get_time(self.elapsed) if self.elapsed else 0, 0, 0
+        h, m, s = get_time(self.elapsed) if self.elapsed else (0, 0, 0)
         
         markdown_table = f"""
 | Metric  | Value |
