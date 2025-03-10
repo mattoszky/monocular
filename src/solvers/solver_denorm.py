@@ -271,6 +271,11 @@ class Solver_Denorm(object):
         
     
     def calc(self, inputs):
+        """
+        Returns the output of the network from a given input
+        """
+        
+        self.load_model()
         inputs = inputs.to(self.device)
         self.net.eval()
         out = self.net(inputs)

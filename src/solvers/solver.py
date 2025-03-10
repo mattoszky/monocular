@@ -23,7 +23,7 @@ def get_time(elapsed):
 def print_time(elapsed, stop_epoch):
     hours, minutes, seconds = get_time(elapsed)
     print(f"stop_epoch: {stop_epoch}")
-    print(f"Training time: {hours} hours, {minutes} minutes and {seconds} seconds")    
+    print(f"Training time: {hours} hours, {minutes} minutes and {seconds} seconds")   
 
 class Solver(object):
     """
@@ -33,7 +33,7 @@ class Solver(object):
     def __init__(self, seed, train_loader, val_loader, test_loader, epochs, lr, train_criterion, test_criterion, inc_val, batch_size, checkpoint_path, model_name, min_vals, max_vals, print_every, th_x, th_y):
         self.seed = seed
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = Net256V2().to(self.device)
+        self.net = Net256().to(self.device)
         self.epochs = epochs
         self.lr = lr
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
@@ -301,6 +301,7 @@ class Solver(object):
         Returns the output of the network from a given input
         """
         
+        self.load_model()
         inputs = inputs.to(self.device)
         self.net.eval()
         out = self.net(inputs)
@@ -308,10 +309,5 @@ class Solver(object):
         out = out.to("cpu")
         return out
     
-    def get_out(checkpoint_path, model_name, inputs):
-        model = torch.load(os.path.join(checkpoint_path, model_name), weights_only=False)
-        model.eval()
-        out = model(inputs)
-        model.train()
-        return out
+    
         

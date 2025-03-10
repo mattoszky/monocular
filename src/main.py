@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import argparse
+import time
 
 from utils.dataset import CustomDataset
 from solvers.solver import Solver
@@ -29,7 +30,7 @@ def main():
     # inputs = inputs[:, :3]
     
     # uncomment for class + HW
-    inputs = inputs[:, [0, -2, -1]]
+    #inputs = inputs[:, [0, -2, -1]]
     
     # train-validation-test sizes
     total_size = len(inputs)
@@ -79,7 +80,8 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     
-    max_epoch = 300
+    
+    max_epoch = 2
     lr = 0.0001
     inc_val = 30
     print_every = 10
@@ -112,6 +114,27 @@ def main():
     #solver.load_model()
     solver.train()
     solver.test()
+    
+    # here an example to use the trained model to get a result
+    '''
+    inp = torch.tensor([0.000000, 2500.000000, 839.000000, 117.000000, 167.000000], dtype=torch.float32)
+    min_val_tensor = min_val_tensor.type(torch.float32)
+    max_val_tensor = max_val_tensor.type(torch.float32)
+    inp = (inp - min_val_tensor[:5]) / (max_val_tensor[:5] - min_val_tensor[:5])
+    
+    start = time.perf_counter_ns()
+    res = solver.calc(inp)
+    end = time.perf_counter_ns()
+    
+    elapsed_ns = end - start
+    print(f"Elapsed time: {elapsed_ns} ns")
+    print(f"Elapsed time: {elapsed_ns / 1e9:.6f} s")
+    
+    res[0] = res[0] * (max_val_tensor[5] - min_val_tensor[5]) + min_val_tensor[5]
+    res[1] = res[1] * (max_val_tensor[6] - min_val_tensor[6]) + min_val_tensor[6]
+    
+    print(f"I want 3.815230 and -1.390400 and I get: {res[0]} and {res[1]}")
+    '''
 
 if __name__ == "__main__":
     main()
