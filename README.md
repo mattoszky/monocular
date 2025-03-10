@@ -24,7 +24,8 @@ export PATH=$HOME/.local/bin:$PATH
 Now you can train your own model by setting the parameters in ```main.py```.
 You can choose the name of the model with the option ```--mn [model name]```.
 For the other params you have to change them manually inside the ```main.py``` file and, if you want to change the type of net, in the ```solver.py``` file.
-You can also run a denorm version of the code by means of `main_denorm.py` associated with `solver_denorm.py`.
+You can also run a denorm version of the code with `main_denorm.py` and `solver_denorm.py`.
+More information can be found inside the source code by means of comments.
 
 When you are ready do as follows:
 
