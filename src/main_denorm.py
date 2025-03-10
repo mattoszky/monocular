@@ -72,28 +72,5 @@ def main():
     solver.train()
     solver.test()
 
-    """
-    inp = torch.tensor([0.000000, 2500.000000, 839.000000, 117.000000, 167.000000], dtype=torch.float32)
-    min_val_tensor = min_val_tensor.type(torch.float32)
-    max_val_tensor = max_val_tensor.type(torch.float32)
-    inp = (inp - min_val_tensor[:5]) / (max_val_tensor[:5] - min_val_tensor[:5])
-    
-    res = solver.calc(inp)
-    
-    print(f"min vals: {min_vals[5:]}")
-    print(f"max vals: {max_vals[5:]}")
-    print(f"res[0] norm: {res[0]}")
-    print(f"res[1] norm: {res[1]}")
-    
-    res[0] = res[0] * (max_val_tensor[5] - min_val_tensor[5]) + min_val_tensor[5]
-    res[1] = res[1] * (max_val_tensor[6] - min_val_tensor[6]) + min_val_tensor[6]
-    
-    
-    #print(f"mi aspetto 3.815230 e -1.390400 e ottengo: {res[0]} e {res[1]}")
-    
-    
-    """
-
-
 if __name__ == "__main__":
     main()

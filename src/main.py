@@ -111,7 +111,7 @@ def main():
                 th_x=th_x,
                 th_y=th_y
             )
-    #solver.load_model()
+    #solver.load_model() #if you want to load an existing model
     solver.train()
     solver.test()
     
