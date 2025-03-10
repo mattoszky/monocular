@@ -7,13 +7,13 @@ The goal of this project is to create a neural network for estimating the distan
 You need to have installed python3 and pip.
 Follow this instruction to be able to work with the prooject:
 ```bash
-# Clonare il repository
-git clone https://github.com/tuo-username/nome-progetto.git
+# Clone the repo
+git clone https://github.com/mattoszky/monocular.git
 
-# Accedere alla cartella del progetto
+# go to the project directory
 cd monocular
 
-# Installare le dipendenze
+# dependecy installation
 pip install -r requirements.txt
 ```
 
